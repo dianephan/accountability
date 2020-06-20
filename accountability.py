@@ -2,7 +2,7 @@ import os
 from flask import Flask, request, url_for
 from twilio.twiml.messaging_response import MessagingResponse
 from twilio.rest import Client
-from datetime import datetime, date, time
+from datetime import datetime, date, time, timedelta
 from dotenv import load_dotenv
 
 load_dotenv()
@@ -93,10 +93,12 @@ def getWebhook():
     recipient_break_dict = {}
     new_recipient = []
     for msg in recipient_messages:
+        updated_time = msg.date_updated + timedelta(hours = -7)
+        updated_time = str(updated_time)
         if msg.body is '2':
-            new_recipient.append(msg.from_ + ': took a break at ' + str(msg.date_updated))
+            new_recipient.append(msg.from_ + ': took a break at ' + updated_time)
         if msg.from_ not in recipient_break_dict and msg.body is '2':
-            recipient_break_dict[msg.from_] = str(msg.date_updated)
+            recipient_break_dict[msg.from_] = updated_time
     return respond(f'{new_recipient}')
 
 @app.route('/studycheck', methods=['GET'])
@@ -112,7 +114,9 @@ def getStudyStatus():
     for msg in recipient_messages:
         # get entire history of said they were studying 
         if msg.body is '1':
-            new_recipient.append(msg.from_ + ': started studying at ' + str(msg.date_updated))
+            updated_time = msg.date_updated + timedelta(hours = -7)
+            updated_time = str(updated_time)
+            new_recipient.append(msg.from_ + ': started studying at ' + updated_time)
     return respond(f'{new_recipient}')
     
 @app.route('/check', methods=['GET'])
