@@ -90,15 +90,12 @@ def getWebhook():
                                 to=TWILIO_PHONE_NUMBER,
                                 # limit=100
                             )
-    recipient_break_dict = {}
     new_recipient = []
     for msg in recipient_messages:
-        updated_time = msg.date_updated + timedelta(hours = -7)
-        updated_time = str(updated_time)
         if msg.body is '2':
+            updated_time = msg.date_updated + timedelta(hours = -7)
+            updated_time = str(updated_time)
             new_recipient.append(msg.from_ + ': took a break at ' + updated_time)
-        if msg.from_ not in recipient_break_dict and msg.body is '2':
-            recipient_break_dict[msg.from_] = updated_time
     return respond(f'{new_recipient}')
 
 @app.route('/studycheck', methods=['GET'])
@@ -112,7 +109,7 @@ def getStudyStatus():
                         )
     new_recipient = []
     for msg in recipient_messages:
-        # get entire history of said they were studying 
+        # get entire history of those who said they were studying 
         if msg.body is '1':
             updated_time = msg.date_updated + timedelta(hours = -7)
             updated_time = str(updated_time)

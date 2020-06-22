@@ -6,4 +6,4 @@ __pycache__/
 .DS_Store
 twilio-7.52.0-jar-with-dependencies.jar
 twilio-java/
-pics
+/pics
