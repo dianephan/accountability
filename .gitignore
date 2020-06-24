@@ -7,3 +7,6 @@ __pycache__/
 twilio-7.52.0-jar-with-dependencies.jar
 twilio-java/
 /pics
+recipient_messages_history.csv
+SmsSender.java
+SmsSender.class

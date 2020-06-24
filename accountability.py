@@ -11,7 +11,7 @@ app = Flask(__name__)
 TWILIO_ACCOUNT_SID = os.environ.get('TWILIO_ACCOUNT_SID')
 TWILIO_AUTH_TOKEN = os.environ.get('TWILIO_AUTH_TOKEN')
 TWILIO_PHONE_NUMBER = os.environ.get('TWILIO_PHONE_NUMBER')
-RECIEPIENT_NUMBER = os.environ.get('RECIEPIENT_NUMBER')
+RECIPIENT_NUMBER = os.environ.get('RECIPIENT_NUMBER')
 client = Client(TWILIO_ACCOUNT_SID, TWILIO_AUTH_TOKEN)
 
 studentsDictionary = {}
@@ -86,35 +86,33 @@ def getWebhook():
     recipient_messages = client.messages.list(
                                 # date_sent=datetime(2020, 6, 9),
                                 date_sent = date.today(),
-                                from_=RECIEPIENT_NUMBER,
                                 to=TWILIO_PHONE_NUMBER,
                                 # limit=100
                             )
-    new_recipient = []
+    recipient_break_list = []
     for msg in recipient_messages:
         if msg.body is '2':
             updated_time = msg.date_updated + timedelta(hours = -7)
             updated_time = str(updated_time)
-            new_recipient.append(msg.from_ + ': took a break at ' + updated_time)
-    return respond(f'{new_recipient}')
+            recipient_break_list.append(msg.from_ + ': took a break at ' + updated_time)
+    return respond(f'{recipient_break_list}')
 
 @app.route('/studycheck', methods=['GET'])
 def getStudyStatus(): 
     #check: how many people have been studying? 
     recipient_messages = client.messages.list(
                             date_sent = date.today(),
-                            from_=RECIEPIENT_NUMBER,
                             to=TWILIO_PHONE_NUMBER,
                             # limit=100
                         )
-    new_recipient = []
+    recipient_studied_list = []
     for msg in recipient_messages:
         # get entire history of those who said they were studying 
         if msg.body is '1':
             updated_time = msg.date_updated + timedelta(hours = -7)
             updated_time = str(updated_time)
-            new_recipient.append(msg.from_ + ': started studying at ' + updated_time)
-    return respond(f'{new_recipient}')
+            recipient_studied_list.append(msg.from_ + ': started studying at ' + updated_time)
+    return respond(f'{recipient_studied_list}')
     
 @app.route('/check', methods=['GET'])
 def getCheckStatus(): 
@@ -126,3 +124,4 @@ def getCheckStatus():
 @app.route('/')
 def hello_world():
     return respond(f'O hi I didnt expect you here')
+
