@@ -1,0 +1,16 @@
+<!DOCTYPE html>
+<html>
+    <head>
+        <title>
+            People who {{action}} today:
+        </title>
+    </head>
+<body>
+    <p>  
+        <h1>People who {{action}} today:</h1> 
+        {% for person in people %}
+            {{person}} <br/>
+        {% endfor %}
+    </p>
+</body>
+</html>

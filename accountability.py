@@ -1,9 +1,9 @@
 import os
-from flask import Flask, request, url_for
+from flask import Flask, request, url_for, render_template
 from twilio.twiml.messaging_response import MessagingResponse
 from twilio.rest import Client
 from datetime import datetime, date, time, timedelta
-from dotenv import load_dotenv
+from dotenv import load_dotenv 
 
 load_dotenv()
 
@@ -11,7 +11,6 @@ app = Flask(__name__)
 TWILIO_ACCOUNT_SID = os.environ.get('TWILIO_ACCOUNT_SID')
 TWILIO_AUTH_TOKEN = os.environ.get('TWILIO_AUTH_TOKEN')
 TWILIO_PHONE_NUMBER = os.environ.get('TWILIO_PHONE_NUMBER')
-RECIPIENT_NUMBER = os.environ.get('RECIPIENT_NUMBER')
 client = Client(TWILIO_ACCOUNT_SID, TWILIO_AUTH_TOKEN)
 
 studentsDictionary = {}
@@ -95,7 +94,7 @@ def getWebhook():
             updated_time = msg.date_updated + timedelta(hours = -7)
             updated_time = str(updated_time)
             recipient_break_list.append(msg.from_ + ': took a break at ' + updated_time)
-    return respond(f'{recipient_break_list}')
+    return render_template('index.html', people=recipient_break_list, action = 'took a break')
 
 @app.route('/studycheck', methods=['GET'])
 def getStudyStatus(): 
@@ -112,7 +111,8 @@ def getStudyStatus():
             updated_time = msg.date_updated + timedelta(hours = -7)
             updated_time = str(updated_time)
             recipient_studied_list.append(msg.from_ + ': started studying at ' + updated_time)
-    return respond(f'{recipient_studied_list}')
+    return render_template('index.html', variable=recipient_studied_list, action = 'studied')
+
     
 @app.route('/check', methods=['GET'])
 def getCheckStatus(): 
